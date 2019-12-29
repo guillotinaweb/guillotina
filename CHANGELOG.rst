@@ -4,7 +4,8 @@ CHANGELOG
 6.0.0a5 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- Migration for tags on DublinCore
+  [bloodbare] 
 
 
 6.0.0a4 (2019-12-23)

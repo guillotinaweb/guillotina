@@ -52,3 +52,8 @@ class IAddOn(Interface):
     def uninstall(container, request):  # noqa: N805
         """
         """
+
+
+# Walking interface
+class IIteratorResources(Interface):
+    pass

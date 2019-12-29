@@ -3,6 +3,9 @@ from guillotina.const import TRASHED_ID
 from guillotina.db.interfaces import IPostgresStorage
 from guillotina.db.storages.utils import clear_table_name
 from guillotina.interfaces import IMigration
+from guillotina.interfaces import IIteratorResources
+from guillotina.behaviors.dublincore import IDublinCore
+from guillotina.utils import get_behavior
 
 
 async def _migrate_constraint(storage, conn):
@@ -46,3 +49,18 @@ async def migrate_contraint(db, conn=None):
     else:
         async with storage.pool.acquire() as conn:
             await _migrate_constraint(storage, conn)
+
+
+@configure.utility(name="6.0.0a1", provides=IMigration)
+async def migrate_tags(db, conn=None):
+    async for key, container in db.async_items():
+        iterator = IIteratorResources(container)
+        async for obj in iterator(myself=True):
+            bhr = await get_behavior(obj, IDublinCore)
+            key = bhr.__dict__["prefix"] + "tags"
+            data = bhr.__dict__["data"]
+            if key in data:
+                bhr.tags = data[key]
+                del data[key]
+                obj.register()
+                bhr.register()

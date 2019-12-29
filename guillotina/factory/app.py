@@ -238,6 +238,7 @@ async def startup_app(config_file=None, settings=None, loop=None, server_app=Non
     configure.scan("guillotina.db.cache")
     configure.scan("guillotina.db.writer")
     configure.scan("guillotina.db.factory")
+    configure.scan("guillotina.db.walking")
     configure.scan("guillotina.exc_resp")
     configure.scan("guillotina.fields")
     configure.scan("guillotina.migrations")

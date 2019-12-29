@@ -97,6 +97,7 @@ from .misc import IAddOn  # noqa
 from .misc import ILanguage  # noqa
 from .misc import IRenderer  # noqa
 from .misc import IRequest  # noqa
+from .misc import IIteratorResources  # noqa
 from .registry import IAddons  # noqa
 from .registry import ILayers  # noqa
 from .response import IASGIResponse  # noqa
