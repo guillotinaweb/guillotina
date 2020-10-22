@@ -133,12 +133,6 @@ With file watcher...
     ./bin/ptw guillotina --runner=./bin/py.test
 
 
-To run tests with cockroach db
-
-.. code-block:: shell
-
-    USE_COCKROACH=true ./bin/pytest guillotina
-
 Default
 -------
 

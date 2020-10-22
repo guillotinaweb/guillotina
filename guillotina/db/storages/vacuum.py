@@ -1,6 +1,5 @@
 from guillotina import configure
 from guillotina.const import TRASHED_ID
-from guillotina.db.interfaces import ICockroachStorage
 from guillotina.db.interfaces import IPostgresStorage
 from guillotina.db.interfaces import IVacuumProvider
 from guillotina.db.storages.utils import register_sql
@@ -122,8 +121,3 @@ class PGVacuum:
                 self._deleted += len(batch)
                 self.status()
         self.status("", "\n")
-
-
-@configure.adapter(for_=ICockroachStorage, provides=IVacuumProvider)
-class CRVacuum(PGVacuum):
-    _trash_batch_name = "CR_TRASH_BATCH"

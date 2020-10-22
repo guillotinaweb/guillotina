@@ -1,6 +1,5 @@
 from guillotina._settings import app_settings
 from guillotina.component import get_adapter
-from guillotina.db.factory import CockroachDatabaseManager
 from guillotina.db.interfaces import IDatabaseManager
 from guillotina.utils import get_database
 
@@ -83,11 +82,6 @@ async def test_storage_exists(db, guillotina_main):
     assert await factory.exists("foobar")
     await factory.delete("foobar")
     assert not await factory.exists("foobar")
-
-
-async def test_get_dsn_from_url():
-    factory = CockroachDatabaseManager(None, {"dsn": "postgresql://root@127.0.0.1:26257?sslmode=disable"})
-    assert factory.get_dsn("foobar") == "postgresql://root@127.0.0.1:26257/foobar?sslmode=disable"
 
 
 async def test_get_internal_database(db, guillotina_main):

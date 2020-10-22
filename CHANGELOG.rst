@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+7.x (unreleased)
+----------------
+
+- Remove Cockroach support
+
+
 6.0.9 (unreleased)
 ------------------
 

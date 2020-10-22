@@ -40,7 +40,7 @@ curl --user root:root http://localhost:8080/db/container
  - **Security**: Guillotina has a granular, hierarchical, multidimensional
    security system that allows you to manage the security of your content
    at a level not available to other frameworks.
- - **Scale**: With integrations like Redis, ElasticSearch and Cockroach, you
+ - **Scale**: With integrations like Redis, ElasticSearch, you
    have the tools to scale.
 
 ## Getting started

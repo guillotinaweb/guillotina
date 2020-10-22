@@ -15,9 +15,6 @@ import time
 pytestmark = pytest.mark.asyncio
 
 
-pytest.mark.skipif(os.environ.get("DATABASE") == "cockroachdb", reason="Flaky cockroachdb test")
-
-
 async def test_create_annotation(db, guillotina_main):
     db = await get_database("db")
     login()

@@ -332,9 +332,6 @@ class IPostgresStorage(IStorage):
     pool = Attribute("")
 
 
-class ICockroachStorage(IStorage):
-    pass
-
 
 class ITransactionStrategy(Interface):
     async def tpc_begin():  # type: ignore

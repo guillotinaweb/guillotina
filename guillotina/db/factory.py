@@ -2,7 +2,6 @@ from copy import deepcopy
 from guillotina import configure
 from guillotina.component import get_utility
 from guillotina.db.interfaces import IDatabaseManager
-from guillotina.db.storages.cockroach import CockroachStorage
 from guillotina.db.storages.dummy import DummyFileStorage
 from guillotina.db.storages.dummy import DummyStorage
 from guillotina.db.storages.pg import PostgresqlStorage
@@ -89,11 +88,6 @@ async def _PGConfigurationFactory(key, dbconfig, loop=None, storage_factory=Post
 @configure.utility(provides=IDatabaseConfigurationFactory, name="postgresql")
 async def PGDatabaseConfigurationFactory(key, dbconfig, loop=None):
     return await _PGConfigurationFactory(key, dbconfig, loop=loop)
-
-
-@configure.utility(provides=IDatabaseConfigurationFactory, name="cockroach")
-async def CRDatabaseConfigurationFactory(key, dbconfig, loop=None):
-    return await _PGConfigurationFactory(key, dbconfig, loop=loop, storage_factory=CockroachStorage)
 
 
 @configure.utility(provides=IDatabaseConfigurationFactory, name="DUMMY")
@@ -208,36 +202,6 @@ WHERE datistemplate = false;"""
         finally:
             if conn is not None:
                 await conn.close()
-
-
-@configure.adapter(for_=IApplication, provides=IDatabaseManager, name="cockroach")  # noqa: N801
-class CockroachDatabaseManager(PostgresqlDatabaseManager):
-    async def _check_exists(self, conn):
-        """
-        cockroach requires us to do a select on the db
-        """
-        await conn.fetch("""SHOW TABLES;""")  # should raise exception if not db
-        return True
-
-    async def get_names(self) -> list:
-        conn = await self.get_connection()
-        try:
-            result = await conn.fetch("""SHOW DATABASES;""")
-            output = []
-            for item in result:
-                item = dict(item)  # type: ignore
-                db_name = item.get("Database", item.get("database_name"))
-                if db_name not in (
-                    "defaultdb",
-                    "system",
-                    "pg_catalog",
-                    "information_schema",
-                    "crdb_internal",
-                ):
-                    output.append(db_name)
-            return output
-        finally:
-            await conn.close()
 
 
 DUMMY_DBS = {"guillotina": None}

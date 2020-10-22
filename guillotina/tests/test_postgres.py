@@ -1,7 +1,6 @@
 from guillotina.component import get_adapter
 from guillotina.content import Folder
 from guillotina.db.interfaces import IVacuumProvider
-from guillotina.db.storages.cockroach import CockroachStorage
 from guillotina.db.storages.pg import PostgresqlStorage
 from guillotina.db.transaction_manager import TransactionManager
 from guillotina.exceptions import ConflictError
@@ -44,13 +43,7 @@ async def get_aps(postgres, strategy=None, pool_size=16, autovacuum=True):
     dsn = "postgres://postgres:@{}:{}/guillotina".format(postgres[0], postgres[1])
     klass = PostgresqlStorage
     if strategy is None:
-        if DATABASE == "cockroachdb":
-            strategy = "dbresolve_readcommitted"
-        else:
-            strategy = "resolve_readcommitted"
-    if DATABASE == "cockroachdb":
-        klass = CockroachStorage
-        dsn = "postgres://root:@{}:{}/guillotina?sslmode=disable".format(postgres[0], postgres[1])
+        strategy = "resolve_readcommitted"
     aps = klass(
         dsn=dsn,
         name="db",
@@ -140,7 +133,7 @@ async def test_restart_connection_pg(db, dummy_guillotina):
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach does not have cascade support")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy does not have cascade support")
 async def test_deleting_parent_deletes_children(db, dummy_guillotina):
     aps = await get_aps(db)
     with TransactionManager(aps) as tm, await tm.begin() as txn:
@@ -237,7 +230,7 @@ async def test_delete_resource_deletes_blob(db, dummy_guillotina):
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach not support resolve...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_should_raise_conflict_error_when_editing_diff_data_with_resolve_strat(db, dummy_guillotina):
     aps = await get_aps(db, "resolve")
     with TransactionManager(aps) as tm, await tm.begin() as txn:
@@ -269,7 +262,7 @@ async def test_should_raise_conflict_error_when_editing_diff_data_with_resolve_s
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach not support resolve...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_should_resolve_conflict_error(db, dummy_guillotina):
     aps = await get_aps(db, "resolve")
     with TransactionManager(aps) as tm, await tm.begin() as txn:
@@ -299,7 +292,7 @@ async def test_should_resolve_conflict_error(db, dummy_guillotina):
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach not support resolve...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_should_not_resolve_conflict_error_with_resolve(db, dummy_guillotina):
     aps = await get_aps(db, "resolve")
     with TransactionManager(aps) as tm, await tm.begin() as txn:
@@ -329,7 +322,7 @@ async def test_should_not_resolve_conflict_error_with_resolve(db, dummy_guilloti
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach not support simple...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_should_not_resolve_conflict_error_with_simple_strat(db, dummy_guillotina):
     aps = await get_aps(db, "simple")
     with TransactionManager(aps) as tm, await tm.begin() as txn:
@@ -570,7 +563,7 @@ async def test_iterate_keys(db, dummy_guillotina):
         await tm.abort(txn=txn)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach does not like this test...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_handles_asyncpg_trying_savepoints(db, dummy_guillotina):
 
     aps = await get_aps(db)
@@ -602,7 +595,7 @@ async def test_handles_asyncpg_trying_savepoints(db, dummy_guillotina):
         await cleanup(aps)
 
 
-@pytest.mark.skipif(DATABASE in ("cockroachdb", "DUMMY"), reason="Cockroach does not like this test...")
+@pytest.mark.skipif(DATABASE in ("DUMMY"), reason="Dummy not support resolve...")
 async def test_handles_asyncpg_trying_txn_with_manual_txn(db, dummy_guillotina):
 
     aps = await get_aps(db)

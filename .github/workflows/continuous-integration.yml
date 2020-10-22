@@ -40,12 +40,10 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8]
-        database: ["DUMMY", "postgres", "cockroachdb"]
+        database: ["DUMMY", "postgres"]
         db_schema: ["custom", "public"]
         exclude:
           - database: "DUMMY"
-            db_schema: "custom"
-          - database: "cockroachdb"
             db_schema: "custom"
 
     # Set environment variables
