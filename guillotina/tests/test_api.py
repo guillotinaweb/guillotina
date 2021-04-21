@@ -1506,3 +1506,22 @@ async def test_default_post_and_patch_handles_wrong_json_payload(container_reque
 
         _, status = await requester("PATCH", "/db/guillotina/", data=json.dumps("foobar"))
         assert status == 412
+
+
+@pytest.mark.app_settings({"max_content_depth": 2})
+async def test_max_depth_on_post(container_requester):
+    async with container_requester as requester:
+        _, status = await requester(
+            "POST", "/db/guillotina/", data=json.dumps({"@type": "Folder", "id": "foo"})
+        )
+        assert status == 201
+        _, status = await requester(
+            "POST", "/db/guillotina/foo", data=json.dumps({"@type": "Folder", "id": "foo"})
+        )
+        assert status == 201
+        resp, status = await requester(
+            "POST", "/db/guillotina/foo/foo", data=json.dumps({"@type": "Folder", "id": "foo"})
+        )
+        assert status == 412
+        assert resp["reason"] == "preconditionFailed"
+        assert resp["type"] == "MaxDepthReached"

@@ -28,6 +28,7 @@ from guillotina.events import ObjectLoadedEvent
 from guillotina.events import ObjectMovedEvent
 from guillotina.exceptions import ConflictIdOnContainer
 from guillotina.exceptions import InvalidContentType
+from guillotina.exceptions import MaxDepthReached
 from guillotina.exceptions import NoPermissionToAdd
 from guillotina.exceptions import NotAllowedContentType
 from guillotina.exceptions import PreconditionFailed
@@ -59,6 +60,7 @@ from guillotina.response import HTTPConflict
 from guillotina.schema.utils import get_default_from_schema
 from guillotina.security.security_code import PrincipalPermissionManager
 from guillotina.transactions import get_transaction
+from guillotina.utils import get_content_depth
 from guillotina.utils import get_object_by_uid
 from guillotina.utils import get_security_policy
 from guillotina.utils import navigate_to
@@ -174,8 +176,7 @@ class Resource(guillotina.db.orm.base.BaseObject):
         super(Resource, self).__init__()
 
     def __repr__(self):
-        """
-        """
+        """"""
         path = "/".join(get_physical_path(self))
         return "< {type} at {path} by {mem} >".format(type=self.type_name, path=path, mem=id(self))
 
@@ -389,8 +390,7 @@ class Folder(Resource):
 
 @configure.contenttype(type_name="Container", schema=IContainer)
 class Container(Folder):
-    """
-    """
+    """"""
 
     async def install(self):
         # Creating and registering a local registry
@@ -601,6 +601,11 @@ async def create_content_in_container(
     if constrains is not None:
         if not constrains.is_type_allowed(type_):
             raise NotAllowedContentType(str(parent), type_)
+
+    # Restrict object tree height
+    max_depth = app_settings.get("max_content_depth", None)
+    if max_depth is not None and get_content_depth(parent) > max_depth:
+        raise MaxDepthReached()
 
     # We create the object with at least the ID
     obj = factory(id=id_, parent=parent)

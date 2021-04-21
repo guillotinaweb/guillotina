@@ -68,6 +68,10 @@ class UnRetryableRequestError(Exception):
     pass
 
 
+class MaxDepthReached(Exception):
+    pass
+
+
 class PreconditionFailed(Exception):
     def __init__(self, container, precondition):
         super().__init__()
@@ -151,8 +155,7 @@ class RestartCommit(Exception):
 
 
 class ConfigurationError(Exception):
-    """There was an error in a configuration
-    """
+    """There was an error in a configuration"""
 
 
 class ServiceConfigurationError(ConfigurationError):
@@ -194,8 +197,7 @@ class BlobChunkNotFound(Exception):
 
 
 class DeserializationError(Exception):
-    """An error happened during deserialization of content.
-    """
+    """An error happened during deserialization of content."""
 
     def __init__(self, errors):
         super().__init__()
@@ -217,8 +219,7 @@ class DeserializationError(Exception):
 
 
 class ValueDeserializationError(Exception):
-    """An error happened during deserialization of content.
-    """
+    """An error happened during deserialization of content."""
 
     def __init__(self, field, value, msg):
         super().__init__()
@@ -228,8 +229,7 @@ class ValueDeserializationError(Exception):
 
 
 class QueryParsingError(Exception):
-    """An error happened while parsing a search query.
-    """
+    """An error happened while parsing a search query."""
 
 
 class FileNotFoundException(Exception):

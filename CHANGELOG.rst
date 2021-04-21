@@ -4,8 +4,7 @@ CHANGELOG
 5.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Add max_content_depth [lferran]
 
 5.4.0 (2021-04-20)
 ------------------

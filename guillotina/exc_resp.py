@@ -3,6 +3,7 @@ from guillotina import error_reasons
 from guillotina.exceptions import ConflictIdOnContainer
 from guillotina.exceptions import DeserializationError
 from guillotina.exceptions import InvalidContentType
+from guillotina.exceptions import MaxDepthReached
 from guillotina.exceptions import NotAllowedContentType
 from guillotina.exceptions import PreconditionFailed
 from guillotina.exceptions import Unauthorized
@@ -84,4 +85,9 @@ register_handler_factory(
     exception_handler_factory(
         error_reasons.UNAUTHORIZED, "Unauthorized", serialize_exc=True, klass=HTTPUnauthorized
     ),
+)
+
+register_handler_factory(
+    MaxDepthReached,
+    exception_handler_factory(error_reasons.PRECONDITION_FAILED, "MaxDepthReached", serialize_exc=True),
 )
