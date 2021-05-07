@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
-from dateutil.parser import parse
+
+try:
+    # Pendulum's parser is faster than dateutil.parser for dates with format
+    # RFC 3339/ISO 8601. See GH issue #974 for details.
+    from pendulum.parsing import parse as _parse
+    from functools import partial
+
+    # When parse is called with `strict=False` it calls dateutil.parse() as fallback
+    parse = partial(_parse, strict=False)
+except ImportError:
+    from dateutil.parser import parse
+
 from guillotina import configure
 from guillotina.component import ComponentLookupError
 from guillotina.component import get_adapter

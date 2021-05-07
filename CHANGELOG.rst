@@ -499,6 +499,9 @@ CHANGELOG
 6.0.0b6 (2020-06-17)
 --------------------
 
+- Use pendulum's parser to deserialize datetime values (if it's installed).
+  Otherwise use current one. [masipcat]
+
 - Undo datetime object renderization on
   guillotina_json_default. [lferran]
 
